@@ -5,12 +5,15 @@ require 'rubygems'
 
 WORK_DIR =  ARGV[0]
 CACHE_DIR = ARGV[1]
+CONFIG_DIR = File.join(WORK_DIR, ".profile.d")
 
 TRIGGER_FILE_NAME = ".buildpacks"
 RELEASES_FILE_NAME = "releases_output.yml"
+CONFIG_FILE_NAME = "ruby.sh"
 
 RELEASES_FILE = File.join(WORK_DIR,RELEASES_FILE_NAME)
 TRIGGER_FILE = File.join(WORK_DIR,TRIGGER_FILE_NAME)
+CONFIG_FILE = File.join(CONFIG_DIR,CONFIG_FILE_NAME)
 @env_yaml = nil
 
 ENV["PATH"]="/usr/local/bin:/usr/bin:/bin:bin"
@@ -74,4 +77,11 @@ end
 
 def read_release_file
   File.read(RELEASES_FILE)
+end
+
+def save_env_config_var(key,value)
+  FileUtils.mkdir_p(CONFIG_DIR) unless File.exists?(CONFIG_FILE)
+  file = File.new(CONFIG_FILE,'a')
+  file << "export #{key}='#{value}'\n"
+  file.close
 end
